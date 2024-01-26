@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello DistrictsController!{% endblock %}
+
+{% block body %}
+
+<div class="container mt-5">
+    <h1 class="mb-5">Districts</h1>
+
+    <form method="get" action="{{ path('app_districts') }}" class="mb-5">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="filterName" class="form-label">Search for a district name:</label>
+                <input type="text" class="form-control" id="filterName" name="filterName" value="{{ app.request.query.get('filterName') }}">
+            </div>
+        </div>
+        <div class="col-md-12">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </form>
+
+    <form method="get" action="{{ path('app_districts') }}" class="mb-5">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="minPopulation" class="form-label">Min Population:</label>
+                <select class="form-select" id="minPopulation" name="minPopulation">
+                    <option value="">----</option>
+                    {% for value in range(1000, 20000, 1000) %}
+                        <option value="{{ value }}" {{ app.request.query.get('minPopulation') == value ? 'selected' : '' }}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="maxPopulation" class="form-label">Max Population:</label>
+                <select class="form-select" id="maxPopulation" name="maxPopulation">
+                    <option value="">----</option>
+                    {% for value in range(1000, 20000, 1000) %}
+                        <option value="{{ value }}" {{ app.request.query.get('maxPopulation') == value ? 'selected' : '' }}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <button type="submit" class="btn btn-primary">Apply Filters</button>
+            <a href="{{ path('app_districts') }}" class="btn btn-secondary">Clear Filters</a>
+        </div>
+    </form>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Thumbnail</th>
+                <th><a href="{{ path('app_districts', {'sort': 'name', 'order': (sortField == 'name' and sortOrder == 'ASC') ? 'DESC' : 'ASC'}) }}">Name</a></th>
+                <th><a href="{{ path('app_districts', {'sort': 'population', 'order': (sortField == 'population' and sortOrder == 'ASC') ? 'DESC' : 'ASC'}) }}">Population</a></th>
+                <th><a href="{{ path('app_districts', {'sort': 'landMass', 'order': (sortField == 'landMass' and sortOrder == 'ASC') ? 'DESC' : 'ASC'}) }}">Land Mass</a></th>
+                <th>City</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for district in districts %}
+                <tr>
+                    <td>{{ district.id }}</td>
+                    <td>
+                        {% if district.imagePath is not null %}
+                            <img src="{{ district.imagePath }}" alt="Thumbnail" class="img-thumbnail" width="50" height="50">
+                        {% else %}
+                            No Image
+                        {% endif %}
+                    </td>
+                    <td>{{ district.name }}</td>
+                    <td>{{ district.population }}</td>
+                    <td>{{ district.landMass }}</td>
+                    <td>{{ district.city }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
